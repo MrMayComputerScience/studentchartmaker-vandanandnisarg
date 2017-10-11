@@ -1,8 +1,15 @@
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.GridPane?>
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<GridPane fx:controller="sample.Controller"
-          xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
-</GridPane>
+<VBox fx:controller="sample.Controller"
+          xmlns:fx="http://javafx.com/fxml" alignment="center">
+    <Button fx:id="attendanceButton" text="Create Attendance Chart" onAction="#createAttendance"/>
+    <Button fx:id="gradesButton" text="Create Grades Chart" onAction="#createGrades"/>
+</VBox>
