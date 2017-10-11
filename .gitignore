@@ -1,1 +1,12 @@
 .idea
+.DS_Store
+*.xml
+Project02/src/sample/Main.java
+Project02/out/production/Project02/sample/sample.fxml
+Project02/out/production/Project02/sample/Main.class
+Project02/.idea/ant.xml
+Project02/.idea/ant.xml
+Project02/.idea/workspace.xml
+Project02/out/production/Project02/sample/Controller.class
+Project02/.idea/ant.xml
+.idea/workspace.xml
