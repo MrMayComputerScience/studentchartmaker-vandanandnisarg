@@ -6,9 +6,19 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
+<VBox xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="sample.gradesController"
-            prefHeight="400.0" prefWidth="600.0">
+            alignment="CENTER">
+    <Label fx:id="CenterText" alignment="CENTER" text="Creating a Grades Chart" textAlignment="CENTER" />
+    <Label fx:id="SpacerText" alignment="CENTER" text="" textAlignment="CENTER" />
+    <Button fx:id="loadStudentButtonGR" text="Select Student" onAction="#loadStudents"/>
+    <Label fx:id="SpacerText1" alignment="CENTER" text="" textAlignment="CENTER" />
+    <TextField fx:id="ColumnNumber" maxWidth="75"/>
+    <Button fx:id="loadColumnNum" text="Select Columns" onAction="#loadColumns"/>
+    <Label fx:id="SpacerText2" alignment="CENTER" text="" textAlignment="CENTER" />
+    <Button fx:id="loadHeader" text="Select Header" onAction="#loadHeader"/>
+    <Label fx:id="SpacerText3" alignment="CENTER" text="" textAlignment="CENTER" />
+    <Button fx:id="createButton" text="Create Chart" onAction="#createChart"/>
 
-</AnchorPane>
+</VBox>
