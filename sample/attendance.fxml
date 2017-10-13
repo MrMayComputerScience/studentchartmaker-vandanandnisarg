@@ -6,8 +6,18 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.text.Text?>
 <VBox xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="sample.attendanceController">
-    
+      xmlns:fx="http://javafx.com/fxml"
+      alignment="CENTER"
+      fx:controller="sample.attendanceController">
+
+    <Button fx:id="loadStudentButton" text="Select Students" onAction="#loadStudents"/>
+    <Text fx:id="displayStudentFile"/>
+    <Button fx:id="loadDatesButton" text="Select Dates" onAction="#loadDates"/>
+    <Text fx:id="displayDatesFile"/>
+    <Button fx:id="loadHeaderButton" text="Select Header" onAction="#loadHeader"/>
+    <Text fx:id="displayHeaderFile"/>
+    <Button fx:id="createButton" text="Create Chart" onAction="#createChart"/>
+
 </VBox>
