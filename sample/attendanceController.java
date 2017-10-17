@@ -24,20 +24,25 @@ public class attendanceController {
     final FileChooser fileLoader = new FileChooser();
     File studentFile, datesFile, headerFile;
 
+    //lists for data
     private ArrayList<String> studentList, datesList, headerList, studentFinal;
 
+    //buttons and stuff from fxml
     @FXML Button loadStudentButton;
     @FXML Text displayStudentFile, displayHeaderFile, displayDatesFile;
 
     public void loadStudents(ActionEvent actionEvent) {
+        //file loader
         Scene stage = loadStudentButton.getScene();
         fileLoader.setTitle("Choose Student File");
 
+        //only txt files
         fileLoader.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
 
         studentFile = fileLoader.showOpenDialog(stage.getWindow());
         System.out.println(studentFile.getName());
 
+        //adding data from file into lists
         try{
             BufferedReader reader = new BufferedReader(new FileReader(studentFile));
             studentList = new ArrayList<String>();
@@ -47,10 +52,12 @@ public class attendanceController {
             while((student = reader.readLine()) != null){
                 studentList.add(student);
             }
-    }
+        }
+
         catch(Exception e){
             e.printStackTrace();
         }
+        System.out.print(studentList.get(0));
 
         //Dumb way to truncate data
         try {
@@ -64,6 +71,7 @@ public class attendanceController {
 
         }
 
+        //displaying file name
         displayStudentFile.setText(studentFile.getName());
     }
 
