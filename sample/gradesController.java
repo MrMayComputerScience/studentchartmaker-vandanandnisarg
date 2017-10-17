@@ -12,9 +12,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class gradesController {
-<<<<<<< HEAD
-    
-=======
+
     @FXML Label SFName,HFName;
     @FXML TextField ColumnNumber;
     public void loadStudents(ActionEvent actionEvent)
@@ -65,5 +63,5 @@ public class gradesController {
     {
 
     }
->>>>>>> master
+
 }
