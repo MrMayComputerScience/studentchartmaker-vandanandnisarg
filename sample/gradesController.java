@@ -10,6 +10,9 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
 
 public class gradesController {
 
@@ -26,6 +29,7 @@ public class gradesController {
             String studentFName = file.getName();
             System.out.println("Student File: "+studentFName);
             SFName.setText(studentFName);
+
         }
         catch(Exception e)
         {
@@ -52,6 +56,16 @@ public class gradesController {
             String headerFName = file.getName();
             System.out.println("Header File: "+headerFName);
             HFName.setText(headerFName);
+            try
+            {
+                List<String> lines = Files.readAllLines(Paths.get(headerFName)); //throws exception
+                System.out.println("Line from the File: "+lines.get(0));
+            }
+            catch (Exception w)
+            {
+                System.out.println("Not Getting Data From File");
+            }
+
         }
         catch(Exception e)
         {
