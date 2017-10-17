@@ -53,12 +53,16 @@ public class attendanceController {
         }
 
         //Dumb way to truncate data
+        try {
+            for (String student : studentList) {
+                String[] clean = student.split("  ");
+                String[] temp = clean[0].split(", ");
+                studentFinal.add(temp[1] + " " + temp[0]);
+            }
+        }
+        catch(Exception e){
 
-        for (String student: studentList) {
-            String[] clean = student.split("  ");
-            String[] temp = clean[0].split(", ");
-            studentFinal.add(temp[1]+" "+temp[0]);
-    }
+        }
 
         displayStudentFile.setText(studentFile.getName());
     }
