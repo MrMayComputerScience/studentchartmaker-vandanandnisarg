@@ -18,6 +18,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class attendanceController {
@@ -43,23 +45,38 @@ public class attendanceController {
 
         String studentFileName = studentList.remove(studentList.size()-1);
 
+        Pattern r = Pattern.compile("([A-Z][\\w'-]+)");
+
+
         //Dumb way to truncate data
         try {
             for (String student : studentList) {
-                String[] clean = student.split("  ");
-                String[] temp = clean[0].split(", ");
-                studentFinal.add(temp[1] + " " + temp[0]);
+                Matcher m = r.matcher(student);
 
-                displayStudentFile.setFill(Color.BLACK);
-                displayStudentFile.setText(studentFileName);
+                if(!student.matches("([A-Z][\\w'-]+)(, )([A-Z][\\w'-]+)(.*)")){
+                    throw new Exception();
+                }
 
+                ArrayList<String> temp = new ArrayList<>();
+                while(m.find()){
+                    temp.add(m.group());
+                }
+                studentFinal.add(temp.get(1)+" "+temp.get(0));
             }
+            displayStudentFile.setFill(Color.BLACK);
+            displayStudentFile.setText(studentFileName);
         }
         catch(Exception e){
+            e.printStackTrace();
             displayStudentFile.setFill(Color.RED);
             displayStudentFile.setText("Incorrect File Format");
-
-            studentFinal.clear();
+        }
+        if(studentFinal.isEmpty()){
+            displayStudentFile.setFill(Color.RED);
+            displayStudentFile.setText("Incorrect File Format");
+        }
+        for (String student: studentFinal){
+            System.out.println(student);
         }
     }
 
@@ -75,8 +92,9 @@ public class attendanceController {
         String datesFileName = datesList.remove(datesList.size()-1);
 
         for(String line: datesList){
-            if(line.matches(".+"));
-            datesFinal.add(line);
+            if(line.matches("[0-9]{1,2}/[0-9]{1,2}/[0-9]{2,4}")){
+                datesFinal.add(line);
+            }
         }
         if(datesFinal.isEmpty()){
             System.out.println("error");
@@ -86,6 +104,9 @@ public class attendanceController {
         else{
             displayDatesFile.setFill(Color.BLACK);
             displayDatesFile.setText(datesFileName);
+        }
+        for (String date: datesFinal){
+            System.out.println(date);
         }
     }
 
