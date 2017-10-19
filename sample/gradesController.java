@@ -2,12 +2,17 @@ package sample;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
     import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -17,7 +22,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-public class gradesController {
+public class gradesController extends JFrame{
 
     @FXML Label SFName,HFName,Error;
     @FXML TextField ColumnNumber;
@@ -109,6 +114,27 @@ public class gradesController {
         System.out.println("Student File Name: "+ studentFileName);
         System.out.println("Column Number "+ colNumber);
         System.out.println("Header File Name "+ headerFileName);
+        try {
+            Stage stage = new Stage();
+            Parent root = FXMLLoader.load(getClass().getResource("createGradesChart.fxml"));
+            stage.setTitle("Add new entry");
+            stage.setScene(new Scene(root, 800, 600));
+            stage.show();
+            // Hide this current window
+            ((Node)(actionEvent.getSource())).getScene().getWindow().hide();
+
+            
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void printGui(ActionEvent actionEvent) {
+    }
+
+    public void saveGui(ActionEvent actionEvent) {
     }
 
 }
