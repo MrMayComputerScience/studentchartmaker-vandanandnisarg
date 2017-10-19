@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 
@@ -17,114 +18,155 @@ import java.io.File;
 import java.io.FileReader;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class attendanceController {
 
     final FileChooser fileLoader = new FileChooser();
-    File studentFile, datesFile, headerFile;
 
     //lists for data
-    private ArrayList<String> studentList, datesList, headerList, studentFinal;
+    private ArrayList<String> studentList = new ArrayList<>(), datesList = new ArrayList<>(), headerList = new ArrayList<>(), studentFinal, headerFinal, datesFinal;
 
     //buttons and stuff from fxml
     @FXML Button loadStudentButton;
-    @FXML Text displayStudentFile, displayHeaderFile, displayDatesFile;
+    @FXML Text displayStudentFile, displayHeaderFile, displayDatesFile, displayErrorMessage;
 
     public void loadStudents(ActionEvent actionEvent) {
         //file loader
-        Scene stage = loadStudentButton.getScene();
-        fileLoader.setTitle("Choose Student File");
+        studentFinal = new ArrayList<>();
 
-        //only txt files
-        fileLoader.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
+        studentList = loadFile();
 
-        studentFile = fileLoader.showOpenDialog(stage.getWindow());
-        System.out.println(studentFile.getName());
-
-        //adding data from file into lists
-        try{
-            BufferedReader reader = new BufferedReader(new FileReader(studentFile));
-            studentList = new ArrayList<String>();
-            studentFinal = new ArrayList<>();
-
-            String student;
-            while((student = reader.readLine()) != null){
-                studentList.add(student);
-            }
+        if(studentList == null){
+            return;
         }
 
-        catch(Exception e){
-            e.printStackTrace();
-        }
-        System.out.print(studentList.get(0));
+        String studentFileName = studentList.remove(studentList.size()-1);
+
+        Pattern r = Pattern.compile("([A-Z][\\w'-]+)");
+
 
         //Dumb way to truncate data
         try {
             for (String student : studentList) {
-                String[] clean = student.split("  ");
-                String[] temp = clean[0].split(", ");
-                studentFinal.add(temp[1] + " " + temp[0]);
+                Matcher m = r.matcher(student);
+
+                if(!student.matches("([A-Z][\\w'-]+)(, )([A-Z][\\w'-]+)(.*)")){
+                    throw new Exception();
+                }
+
+                ArrayList<String> temp = new ArrayList<>();
+                while(m.find()){
+                    temp.add(m.group());
+                }
+                studentFinal.add(temp.get(1)+" "+temp.get(0));
             }
+            displayStudentFile.setFill(Color.BLACK);
+            displayStudentFile.setText(studentFileName);
         }
         catch(Exception e){
-
+            e.printStackTrace();
+            displayStudentFile.setFill(Color.RED);
+            displayStudentFile.setText("Incorrect File Format");
         }
-
-        //displaying file name
-        displayStudentFile.setText(studentFile.getName());
+        if(studentFinal.isEmpty()){
+            displayStudentFile.setFill(Color.RED);
+            displayStudentFile.setText("Incorrect File Format");
+        }
+        for (String student: studentFinal){
+            System.out.println(student);
+        }
     }
 
     public void loadDates(ActionEvent actionEvent) {
-        Scene stage = loadStudentButton.getScene();
-        fileLoader.setTitle("Choose Dates File");
+        datesFinal = new ArrayList<>();
 
-        fileLoader.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
+        datesList = loadFile();
 
-        datesFile = fileLoader.showOpenDialog(stage.getWindow());
-        System.out.println(datesFile.getName());
+        if(datesList == null){
+            return;
+        }
 
-        try{
-            BufferedReader reader = new BufferedReader(new FileReader(datesFile));
-            datesList = new ArrayList<String>();
+        String datesFileName = datesList.remove(datesList.size()-1);
 
-            String date;
-            while((date = reader.readLine()) != null){
-                datesList.add(date);
+        for(String line: datesList){
+            if(line.matches("[0-9]{1,2}/[0-9]{1,2}/[0-9]{2,4}")){
+                datesFinal.add(line);
             }
         }
-        catch(Exception e){
-            e.printStackTrace();
+        if(datesFinal.isEmpty()){
+            System.out.println("error");
+            displayDatesFile.setFill(Color.RED);
+            displayDatesFile.setText("Incorrect File Format");
         }
-
-        displayDatesFile.setText(datesFile.getName());
+        else{
+            displayDatesFile.setFill(Color.BLACK);
+            displayDatesFile.setText(datesFileName);
+        }
+        for (String date: datesFinal){
+            System.out.println(date);
+        }
     }
 
     public void loadHeader(ActionEvent actionEvent) {
+        headerFinal = new ArrayList<>();
+
+        headerList = loadFile();
+
+        if(headerList == null){
+            return;
+        }
+
+        String headerFileTitle = headerList.remove(headerList.size()-1);
+
+        if(headerList.isEmpty()){
+            displayHeaderFile.setFill(Color.RED);
+            displayHeaderFile.setText("Incorrect File Format");
+        }
+        else{
+            headerFinal.add(headerList.get(0));
+
+            displayHeaderFile.setFill(Color.BLACK);
+            displayHeaderFile.setText(headerFileTitle);
+        }
+    }
+
+    private ArrayList<String> loadFile(){
         Scene stage = loadStudentButton.getScene();
-        fileLoader.setTitle("Choose Header File");
+        fileLoader.setTitle("Choose File");
+
+        ArrayList<String> dataList = new ArrayList<>();
 
         fileLoader.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
 
-        headerFile = fileLoader.showOpenDialog(stage.getWindow());
-        System.out.println(headerFile.getName());
-
         try{
-            BufferedReader reader = new BufferedReader(new FileReader(headerFile));
-            headerList = new ArrayList<String>();
+            File dataFile = fileLoader.showOpenDialog(stage.getWindow());
+            System.out.println(dataFile.getName());
 
-            String header;
-            while((header = reader.readLine()) != null){
-                headerList.add(header);
+            BufferedReader reader = new BufferedReader(new FileReader(dataFile));
+
+            String temp;
+            while((temp = reader.readLine()) != null){
+                dataList.add(temp);
             }
+
+            dataList.add(dataFile.getName());
         }
         catch(Exception e){
-            e.printStackTrace();
+          return null;
         }
+        return dataList;
 
-        displayHeaderFile.setText(headerFile.getName());
     }
 
     public void createChart(ActionEvent actionEvent) {
+        if(!studentFinal.isEmpty()&&!headerFinal.isEmpty()&&!datesFinal.isEmpty()){
+
+        }
+        else{
+            displayErrorMessage.setText("Missing Files");
+        }
     }
 }
