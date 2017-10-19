@@ -23,10 +23,9 @@ import java.util.ArrayList;
 public class attendanceController {
 
     final FileChooser fileLoader = new FileChooser();
-    File studentFile, datesFile, headerFile;
 
     //lists for data
-    private ArrayList<String> studentList, datesList, headerList, studentFinal, headerFinal, datesFinal;
+    private ArrayList<String> studentList = new ArrayList<>(), datesList = new ArrayList<>(), headerList = new ArrayList<>(), studentFinal, headerFinal, datesFinal;
 
     //buttons and stuff from fxml
     @FXML Button loadStudentButton;
@@ -36,7 +35,13 @@ public class attendanceController {
         //file loader
         studentFinal = new ArrayList<>();
 
-        loadFile(studentFile, studentList);
+        studentList = loadFile();
+
+        if(studentList == null){
+            return;
+        }
+
+        String studentFileName = studentList.remove(studentList.size()-1);
 
         //Dumb way to truncate data
         try {
@@ -46,7 +51,7 @@ public class attendanceController {
                 studentFinal.add(temp[1] + " " + temp[0]);
 
                 displayStudentFile.setFill(Color.BLACK);
-                displayStudentFile.setText(studentFile.getName());
+                displayStudentFile.setText(studentFileName);
 
             }
         }
@@ -61,7 +66,14 @@ public class attendanceController {
     public void loadDates(ActionEvent actionEvent) {
         datesFinal = new ArrayList<>();
 
-        loadFile(datesFile, datesList);
+        datesList = loadFile();
+
+        if(datesList == null){
+            return;
+        }
+
+        String datesFileName = datesList.remove(datesList.size()-1);
+
         for(String line: datesList){
             if(line.matches(".+"));
             datesFinal.add(line);
@@ -73,51 +85,59 @@ public class attendanceController {
         }
         else{
             displayDatesFile.setFill(Color.BLACK);
-            displayDatesFile.setText(datesFile.getName());
+            displayDatesFile.setText(datesFileName);
         }
     }
 
     public void loadHeader(ActionEvent actionEvent) {
         headerFinal = new ArrayList<>();
 
-        loadFile(headerFile, headerList);
-        
+        headerList = loadFile();
 
-        headerFinal.add(headerList.get(0));
+        if(headerList == null){
+            return;
+        }
 
-        if(headerFinal.isEmpty()){
-            System.out.println("error");
+        String headerFileTitle = headerList.remove(headerList.size()-1);
+
+        if(headerList.isEmpty()){
             displayHeaderFile.setFill(Color.RED);
             displayHeaderFile.setText("Incorrect File Format");
         }
         else{
-            System.out.println("haha");
+            headerFinal.add(headerList.get(0));
+
             displayHeaderFile.setFill(Color.BLACK);
-            displayHeaderFile.setText(headerFile.getName());
+            displayHeaderFile.setText(headerFileTitle);
         }
     }
 
-    private void loadFile(File dataFile, ArrayList<String> dataList){
+    private ArrayList<String> loadFile(){
         Scene stage = loadStudentButton.getScene();
         fileLoader.setTitle("Choose File");
+
+        ArrayList<String> dataList = new ArrayList<>();
 
         fileLoader.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
 
         try{
-            dataFile = fileLoader.showOpenDialog(stage.getWindow());
+            File dataFile = fileLoader.showOpenDialog(stage.getWindow());
             System.out.println(dataFile.getName());
 
             BufferedReader reader = new BufferedReader(new FileReader(dataFile));
-            dataList = new ArrayList<String>();
 
             String temp;
             while((temp = reader.readLine()) != null){
                 dataList.add(temp);
             }
+
+            dataList.add(dataFile.getName());
         }
         catch(Exception e){
-            e.printStackTrace();
+          return null;
         }
+        return dataList;
+
     }
 
     public void createChart(ActionEvent actionEvent) {
