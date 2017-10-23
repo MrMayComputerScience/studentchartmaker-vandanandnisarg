@@ -14,24 +14,30 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.hssf.util.HSSFColor.GREEN;
+import org.apache.poi.ss.usermodel.*;
 
 
 public class attendanceController {
 
     private final FileChooser fileLoader = new FileChooser();
 
-    private ArrayList<String> studentFinal = new ArrayList<>();
-    private ArrayList<String> headerFinal = new ArrayList<>();
-    private ArrayList<String> datesFinal = new ArrayList<>();
+    public ArrayList<String> studentFinal = new ArrayList<>();
+    public ArrayList<String> headerFinal = new ArrayList<>();
+    public ArrayList<String> datesFinal = new ArrayList<>();
 
     //buttons and stuff from fxml
     @FXML Button loadStudentButton;
@@ -165,16 +171,11 @@ public class attendanceController {
     public void createChart(ActionEvent actionEvent) {
         if(!studentFinal.isEmpty()&&!headerFinal.isEmpty()&&!datesFinal.isEmpty()){
             try {
-                Stage stage = new Stage();
-                Parent root = FXMLLoader.load(getClass().getResource("createAttendanceChart.fxml"));
-                stage.setTitle("Add new entry");
-                stage.setScene(new Scene(root, 800, 600));
-                stage.show();
                 // Hide this current window
                 ((Node)(actionEvent.getSource())).getScene().getWindow().hide();
-
+                createSheet();
             }
-            catch (IOException e) {
+            catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -183,8 +184,124 @@ public class attendanceController {
             displayErrorMessage.setText("Missing Files");
         }
     }
+    public String createSheet() {
 
 
+        int bordernum = 2;
+        try {
+            FileOutputStream fileOut = new FileOutputStream("Attendance Sheet.xls");
+            HSSFWorkbook workbook = new HSSFWorkbook();
+            HSSFSheet worksheet = workbook.createSheet("Attendance sheet");
+
+
+
+            // row 1 for Prinitng attendance sheet in center
+            HSSFRow row0 = worksheet.createRow((short) 0);//1
+            HSSFCell cellmid = row0.createCell((short) (datesFinal.size()/2-1));//2
+            cellmid.setCellValue(headerFinal.get(0));//3
+            HSSFCellStyle cellStylem = workbook.createCellStyle();//4
+            cellStylem.setFillForegroundColor(HSSFColor.GOLD.index);//5
+            cellmid.setCellStyle(cellStylem);//6
+            createBorders(workbook, cellmid, 1);
+            HSSFCell cellmid2 = row0.createCell((short) (datesFinal.size()/2));//2
+            createBorders(workbook, cellmid2, 1);
+
+
+
+            // row 2 with all the dates in the correct place
+            HSSFRow row1 = worksheet.createRow((short) 1);//1
+            HSSFCell cell1;
+            for(int y = 0; y < datesFinal.size(); y++){
+
+                cell1 = row1.createCell((short) y+1);//2
+                cell1.setCellValue(datesFinal.get(y));//3
+                createBorders(workbook, cell1, bordernum);
+
+            }
+            HSSFCellStyle cellStylei = workbook.createCellStyle();//4
+            cellStylei.setFillForegroundColor(HSSFColor.GREEN.index);//5
+
+
+
+            // row 3 and on until the studentList.size() create the box.
+            int counter = 0;
+            for(int stu = 2; stu <= (studentFinal.size()+1); stu++){
+                HSSFRow Row = worksheet.createRow((short) stu);//1
+                for(int gr = 0; gr <= datesFinal.size(); gr++){
+                    if(gr == 0){
+                        HSSFCell cell = Row.createCell((short) 0);//2
+                        cell.setCellValue(studentFinal.get(counter));//3
+                        HSSFCellStyle cellStyle2 = workbook.createCellStyle();//4
+                        cellStyle2.setFillBackgroundColor(IndexedColors.YELLOW.getIndex());
+                        //cellStyle2.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+                        //cellStyle2.setFillForegroundColor(HSSFColor.GOLD.index);//5
+
+                        cell.setCellStyle(cellStyle2);//6
+                        createBorders(workbook, cell, 2);
+                    }else{
+                        HSSFCell Cell = Row.createCell((short) gr);//2
+                        createBorders(workbook, Cell, 3);
+                    }
+
+
+                }
+                counter++;
+            }
+            workbook.write(fileOut);
+            fileOut.flush();
+            fileOut.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "It Works";
+
+    }
+    public static void createBorders(HSSFWorkbook workbook,HSSFCell cell, int x) {
+        if (x == 1) {
+            HSSFCellStyle style = workbook.createCellStyle();
+            //style.setFillBackgroundColor(HSSFColor.HSSFColorPredefined.LIGHT_BLUE.getIndex());
+            //style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            style.setBorderBottom(BorderStyle.THICK);
+            style.setBottomBorderColor(HSSFColor.HSSFColorPredefined.LIGHT_BLUE.getIndex());
+            style.setBorderLeft(BorderStyle.THICK);
+            style.setLeftBorderColor(HSSFColor.HSSFColorPredefined.LIGHT_BLUE.getIndex());
+            style.setBorderRight(BorderStyle.THICK);
+            style.setRightBorderColor(HSSFColor.HSSFColorPredefined.LIGHT_BLUE.getIndex());
+            style.setBorderTop(BorderStyle.THICK);
+            style.setTopBorderColor(HSSFColor.HSSFColorPredefined.LIGHT_BLUE.getIndex());
+            cell.setCellStyle(style);
+        } else if (x == 2) {
+            HSSFCellStyle style = workbook.createCellStyle();
+            //style.setFillBackgroundColor(HSSFColor.HSSFColorPredefined.LIGHT_BLUE.getIndex());
+            //style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            style.setBorderBottom(BorderStyle.MEDIUM);
+            style.setBottomBorderColor(HSSFColor.HSSFColorPredefined.BLACK.getIndex());
+            style.setBorderLeft(BorderStyle.MEDIUM);
+            style.setLeftBorderColor(HSSFColor.HSSFColorPredefined.BLACK.getIndex());
+            style.setBorderRight(BorderStyle.MEDIUM);
+            style.setRightBorderColor(HSSFColor.HSSFColorPredefined.BLACK.getIndex());
+            style.setBorderTop(BorderStyle.MEDIUM);
+            style.setTopBorderColor(HSSFColor.HSSFColorPredefined.BLACK.getIndex());
+            cell.setCellStyle(style);
+        } else {
+            HSSFCellStyle style = workbook.createCellStyle();
+            //style.setFillBackgroundColor(HSSFColor.HSSFColorPredefined.AQUA.getIndex());
+            //style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            style.setBorderBottom(BorderStyle.THIN);
+            style.setBottomBorderColor(HSSFColor.HSSFColorPredefined.BLACK.getIndex());
+            style.setBorderLeft(BorderStyle.THIN);
+            style.setLeftBorderColor(HSSFColor.HSSFColorPredefined.BLACK.getIndex());
+            style.setBorderRight(BorderStyle.THIN);
+            style.setRightBorderColor(HSSFColor.HSSFColorPredefined.BLACK.getIndex());
+            style.setBorderTop(BorderStyle.THIN);
+            style.setTopBorderColor(HSSFColor.HSSFColorPredefined.BLACK.getIndex());
+            cell.setCellStyle(style);
+        }
+
+
+    }
     public void printGui(ActionEvent actionEvent) {
     }
 
