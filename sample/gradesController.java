@@ -114,6 +114,7 @@ public class gradesController extends JFrame{
         System.out.println("Student File Name: "+ studentFileName);
         System.out.println("Column Number "+ colNumber);
         System.out.println("Header File Name "+ headerFileName);
+
         try {
             Stage stage = new Stage();
             Parent root = FXMLLoader.load(getClass().getResource("createGradesChart.fxml"));
