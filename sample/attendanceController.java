@@ -20,15 +20,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-<<<<<<< HEAD
+
 
 
 import java.io.*;
 import java.util.ArrayList;
-=======
 import java.util.Collection;
 import java.util.Collections;
->>>>>>> David's-Branch
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
