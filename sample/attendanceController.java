@@ -185,9 +185,19 @@ public class attendanceController {
     public void createChart(ActionEvent actionEvent) {
         if(!studentFinal.isEmpty()&&!headerFinal.isEmpty()&&!datesFinal.isEmpty()){
             try {
+                /* Hide this current window
+                Stage stage = new Stage();
+                Parent root = FXMLLoader.load(getClass().getResource("createAttendanceChart.fxml"));
+                stage.setTitle("Add new entry");
+                stage.setScene(new Scene(root, 800, 600));
+                stage.show();*/
+
                 // Hide this current window
                 ((Node)(actionEvent.getSource())).getScene().getWindow().hide();
+
                 createSheet();
+
+
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -278,13 +288,13 @@ public class attendanceController {
             //style.setFillBackgroundColor(HSSFColor.HSSFColorPredefined.LIGHT_BLUE.getIndex());
             //style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
             style.setBorderBottom(BorderStyle.THICK);
-            style.setBottomBorderColor(HSSFColor.HSSFColorPredefined.LIGHT_BLUE.getIndex());
+            style.setBottomBorderColor(HSSFColor.HSSFColorPredefined.BLACK.getIndex());
             style.setBorderLeft(BorderStyle.THICK);
-            style.setLeftBorderColor(HSSFColor.HSSFColorPredefined.LIGHT_BLUE.getIndex());
+            style.setLeftBorderColor(HSSFColor.HSSFColorPredefined.BLACK.getIndex());
             style.setBorderRight(BorderStyle.THICK);
-            style.setRightBorderColor(HSSFColor.HSSFColorPredefined.LIGHT_BLUE.getIndex());
+            style.setRightBorderColor(HSSFColor.HSSFColorPredefined.BLACK.getIndex());
             style.setBorderTop(BorderStyle.THICK);
-            style.setTopBorderColor(HSSFColor.HSSFColorPredefined.LIGHT_BLUE.getIndex());
+            style.setTopBorderColor(HSSFColor.HSSFColorPredefined.BLACK.getIndex());
             cell.setCellStyle(style);
         } else if (x == 2) {
             HSSFCellStyle style = workbook.createCellStyle();

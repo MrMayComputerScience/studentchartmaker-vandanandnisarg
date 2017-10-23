@@ -8,20 +8,9 @@
 
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.collections.FXCollections?>
+<?import javafx.scene.text.Text?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="sample.attendanceController"
             prefHeight="400.0" prefWidth="600.0">
-    <bottom>
-        <HBox alignment="CENTER_RIGHT">
-            <Button fx:id="printer" text="Print" onAction="#printGui"/>
-            <Label fx:id="SpacerText5" alignment="CENTER" text="   " textAlignment="CENTER" />
-            <Button fx:id="save" text="Save as PDF" onAction="#saveGui"/>
-        </HBox>
-    </bottom>
-
-    <center>
-
-    </center>
-
 </BorderPane>
