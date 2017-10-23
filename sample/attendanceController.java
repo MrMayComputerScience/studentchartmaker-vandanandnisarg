@@ -5,18 +5,20 @@ package sample;
  */
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.lang.reflect.Array;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,7 +29,7 @@ public class attendanceController {
     final FileChooser fileLoader = new FileChooser();
 
     //lists for data
-    private ArrayList<String> studentList = new ArrayList<>(), datesList = new ArrayList<>(), headerList = new ArrayList<>(), studentFinal, headerFinal, datesFinal;
+    private ArrayList<String> studentList = new ArrayList<>(), datesList = new ArrayList<>(), headerList = new ArrayList<>(), studentFinal = new ArrayList<>(), headerFinal = new ArrayList<>(), datesFinal = new ArrayList<>();
 
     //buttons and stuff from fxml
     @FXML Button loadStudentButton;
@@ -35,7 +37,6 @@ public class attendanceController {
 
     public void loadStudents(ActionEvent actionEvent) {
         //file loader
-        studentFinal = new ArrayList<>();
 
         studentList = loadFile();
 
@@ -67,7 +68,7 @@ public class attendanceController {
             displayStudentFile.setText(studentFileName);
         }
         catch(Exception e){
-            e.printStackTrace();
+            //e.printStackTrace();
             displayStudentFile.setFill(Color.RED);
             displayStudentFile.setText("Incorrect File Format");
         }
@@ -81,7 +82,6 @@ public class attendanceController {
     }
 
     public void loadDates(ActionEvent actionEvent) {
-        datesFinal = new ArrayList<>();
 
         datesList = loadFile();
 
@@ -111,7 +111,6 @@ public class attendanceController {
     }
 
     public void loadHeader(ActionEvent actionEvent) {
-        headerFinal = new ArrayList<>();
 
         headerList = loadFile();
 
@@ -163,10 +162,30 @@ public class attendanceController {
 
     public void createChart(ActionEvent actionEvent) {
         if(!studentFinal.isEmpty()&&!headerFinal.isEmpty()&&!datesFinal.isEmpty()){
+            try {
+                Stage stage = new Stage();
+                Parent root = FXMLLoader.load(getClass().getResource("createAttendanceChart.fxml"));
+                stage.setTitle("Add new entry");
+                stage.setScene(new Scene(root, 800, 600));
+                stage.show();
+                // Hide this current window
+                ((Node)(actionEvent.getSource())).getScene().getWindow().hide();
 
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        else{
+        else {
+            displayErrorMessage.setFill(Color.RED);
             displayErrorMessage.setText("Missing Files");
         }
+    }
+
+
+    public void printGui(ActionEvent actionEvent) {
+    }
+
+    public void saveGui(ActionEvent actionEvent) {
     }
 }
