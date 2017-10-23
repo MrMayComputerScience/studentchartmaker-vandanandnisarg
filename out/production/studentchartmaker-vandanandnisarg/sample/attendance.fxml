@@ -19,5 +19,6 @@
     <Button fx:id="loadHeaderButton" text="Select Header" onAction="#loadHeader"/>
     <Text fx:id="displayHeaderFile"/>
     <Button fx:id="createButton" text="Create Chart" onAction="#createChart"/>
+    <Text fx:id="displayErrorMessage"/>
 
 </VBox>
