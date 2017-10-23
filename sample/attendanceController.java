@@ -26,10 +26,11 @@ import java.util.regex.Pattern;
 
 public class attendanceController {
 
-    final FileChooser fileLoader = new FileChooser();
+    private final FileChooser fileLoader = new FileChooser();
 
-    //lists for data
-    private ArrayList<String> studentList = new ArrayList<>(), datesList = new ArrayList<>(), headerList = new ArrayList<>(), studentFinal = new ArrayList<>(), headerFinal = new ArrayList<>(), datesFinal = new ArrayList<>();
+    private ArrayList<String> studentFinal = new ArrayList<>();
+    private ArrayList<String> headerFinal = new ArrayList<>();
+    private ArrayList<String> datesFinal = new ArrayList<>();
 
     //buttons and stuff from fxml
     @FXML Button loadStudentButton;
@@ -38,7 +39,7 @@ public class attendanceController {
     public void loadStudents(ActionEvent actionEvent) {
         //file loader
 
-        studentList = loadFile();
+        ArrayList<String> studentList = loadFile();
 
         if(studentList == null){
             return;
@@ -83,7 +84,7 @@ public class attendanceController {
 
     public void loadDates(ActionEvent actionEvent) {
 
-        datesList = loadFile();
+        ArrayList<String> datesList = loadFile();
 
         if(datesList == null){
             return;
@@ -112,7 +113,7 @@ public class attendanceController {
 
     public void loadHeader(ActionEvent actionEvent) {
 
-        headerList = loadFile();
+        ArrayList<String> headerList = loadFile();
 
         if(headerList == null){
             return;
