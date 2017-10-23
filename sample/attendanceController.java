@@ -10,6 +10,8 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
@@ -18,10 +20,15 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+<<<<<<< HEAD
 
 
 import java.io.*;
 import java.util.ArrayList;
+=======
+import java.util.Collection;
+import java.util.Collections;
+>>>>>>> David's-Branch
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,6 +49,7 @@ public class attendanceController {
     //buttons and stuff from fxml
     @FXML Button loadStudentButton;
     @FXML Text displayStudentFile, displayHeaderFile, displayDatesFile, displayErrorMessage;
+    @FXML TableView finalChart;
 
     public void loadStudents(ActionEvent actionEvent) {
         //file loader
@@ -70,10 +78,16 @@ public class attendanceController {
                 while(m.find()){
                     temp.add(m.group());
                 }
-                studentFinal.add(temp.get(1)+" "+temp.get(0));
+                studentFinal.add(temp.get(0)+" "+temp.get(1));
             }
             displayStudentFile.setFill(Color.BLACK);
             displayStudentFile.setText(studentFileName);
+
+            Collections.sort(studentFinal);
+            for (int i = 0; i < studentFinal.size(); i++) {
+                String[] reverse = studentFinal.get(i).split(" ");
+                studentFinal.set(i, reverse[1]+" "+reverse[0]);
+            }
         }
         catch(Exception e){
             //e.printStackTrace();
@@ -84,9 +98,11 @@ public class attendanceController {
             displayStudentFile.setFill(Color.RED);
             displayStudentFile.setText("Incorrect File Format");
         }
+
         for (String student: studentFinal){
             System.out.println(student);
         }
+        Collections.sort(studentFinal);
     }
 
     public void loadDates(ActionEvent actionEvent) {

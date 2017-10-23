@@ -21,9 +21,7 @@
     </bottom>
 
     <center>
-        <GridPane alignment="CENTER">
 
-        </GridPane>
     </center>
 
 </BorderPane>
