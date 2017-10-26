@@ -14,6 +14,7 @@
             fx:controller="sample.attendanceController"
             prefHeight="400.0" prefWidth="600.0">
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     <bottom>
         <HBox alignment="CENTER_RIGHT">
@@ -28,4 +29,6 @@
     </center>
 
 >>>>>>> 6836d8da31713ac493c3d09dd076fdb288fdab70
+=======
+>>>>>>> Nisarg-Final
 </BorderPane>
