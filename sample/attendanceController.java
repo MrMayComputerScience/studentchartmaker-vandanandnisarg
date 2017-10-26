@@ -20,15 +20,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-<<<<<<< HEAD
 
 
 import java.io.*;
 import java.util.ArrayList;
-=======
 import java.util.Collection;
 import java.util.Collections;
->>>>>>> David's-Branch
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -112,11 +109,10 @@ public class attendanceController {
         if(datesList == null){
             return;
         }
-
+        //[0-9]{1,2}/[0-9]{1,2}/[0-9]{1,2}
         String datesFileName = datesList.remove(datesList.size()-1);
-
         for(String line: datesList){
-            if(line.matches("[0-9]{1,2}/[0-9]{1,2}/[0-9]{2,4}")){
+            if(line.matches("[0-9]{1,2}/[0-9]{1,2}/[0-9]{1,2}")){
                 datesFinal.add(line);
             }
         }
@@ -247,8 +243,11 @@ public class attendanceController {
                     if(gr == 0){
                         HSSFCell cell = Row.createCell((short) 0);//2
                         cell.setCellValue(studentFinal.get(counter));//3
+                        worksheet.autoSizeColumn(gr);
                         HSSFCellStyle cellStyle2 = workbook.createCellStyle();//4
-                        cellStyle2.setFillBackgroundColor(IndexedColors.YELLOW.getIndex());
+                        //cellStyle2.setAlignment(HSSFCellStyle.);
+
+                        //cellStyle2.setFillBackgroundColor(IndexedColors.YELLOW.getIndex());
                         //cellStyle2.setFillPattern(FillPatternType.SOLID_FOREGROUND);
                         //cellStyle2.setFillForegroundColor(HSSFColor.GOLD.index);//5
 
