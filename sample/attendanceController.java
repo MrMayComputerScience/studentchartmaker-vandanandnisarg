@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 
-
 import java.io.*;
 import java.util.ArrayList;
 
@@ -114,7 +113,7 @@ public class attendanceController {
         //[0-9]{1,2}/[0-9]{1,2}/[0-9]{1,2}
         String datesFileName = datesList.remove(datesList.size()-1);
         for(String line: datesList){
-            if(line.matches("[0-9]{1,2}/[0-9]{1,2}/[0-9]{1,2}")){
+            if(line.matches("[0-9]{1,2}/[0-9]{1,2}")){
                 datesFinal.add(line);
             }
         }
@@ -147,7 +146,11 @@ public class attendanceController {
             displayHeaderFile.setText("Incorrect File Format");
         }
         else{
-            headerFinal.add(headerList.get(0));
+            String header = "";
+            for (String line:headerList){
+                header += " "+line;
+            }
+            headerFinal.add(header);
 
             displayHeaderFile.setFill(Color.BLACK);
             displayHeaderFile.setText(headerFileTitle);
