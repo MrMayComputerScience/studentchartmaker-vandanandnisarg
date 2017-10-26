@@ -15,6 +15,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+
+import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -34,7 +36,10 @@ import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.hssf.util.HSSFColor.GREEN;
 import org.apache.poi.ss.usermodel.*;
-
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import sun.tools.jstat.Alignment;
 
 public class attendanceController {
 
@@ -100,7 +105,6 @@ public class attendanceController {
         for (String student: studentFinal){
             System.out.println(student);
         }
-        Collections.sort(studentFinal);
     }
 
     public void loadDates(ActionEvent actionEvent) {
@@ -219,19 +223,23 @@ public class attendanceController {
             FileOutputStream fileOut = new FileOutputStream("Attendance Sheet.xls");
             HSSFWorkbook workbook = new HSSFWorkbook();
             HSSFSheet worksheet = workbook.createSheet("Attendance sheet");
+            worksheet.getPrintSetup().setLandscape(true);
 
 
 
             // row 1 for Prinitng attendance sheet in center
             HSSFRow row0 = worksheet.createRow((short) 0);//1
-            HSSFCell cellmid = row0.createCell((short) (datesFinal.size()/2-1));//2
+            HSSFCell cellmid = row0.createCell((short) 0);//2
+            worksheet.addMergedRegion(new CellRangeAddress(0,0,0,datesFinal.size()));
             cellmid.setCellValue(headerFinal.get(0));//3
             HSSFCellStyle cellStylem = workbook.createCellStyle();//4
+            cellStylem.setAlignment(HorizontalAlignment.CENTER);
             cellStylem.setFillForegroundColor(HSSFColor.GOLD.index);//5
             cellmid.setCellStyle(cellStylem);//6
-            createBorders(workbook, cellmid, 1);
-            HSSFCell cellmid2 = row0.createCell((short) (datesFinal.size()/2));//2
-            createBorders(workbook, cellmid2, 1);
+
+
+            //.addMergedRegion(rowFrom,rowTo,colFrom,colTo);
+
 
 
 
@@ -242,7 +250,9 @@ public class attendanceController {
 
                 cell1 = row1.createCell((short) y+1);//2
                 cell1.setCellValue(datesFinal.get(y));//3
+                //worksheet.autoSizeColumn(y+1);
                 createBorders(workbook, cell1, bordernum);
+
 
             }
             HSSFCellStyle cellStylei = workbook.createCellStyle();//4
@@ -260,16 +270,13 @@ public class attendanceController {
                         cell.setCellValue(studentFinal.get(counter));//3
                         worksheet.autoSizeColumn(gr);
                         HSSFCellStyle cellStyle2 = workbook.createCellStyle();//4
-                        //cellStyle2.setAlignment(HSSFCellStyle.);
 
-                        //cellStyle2.setFillBackgroundColor(IndexedColors.YELLOW.getIndex());
-                        //cellStyle2.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-                        //cellStyle2.setFillForegroundColor(HSSFColor.GOLD.index);//5
 
                         cell.setCellStyle(cellStyle2);//6
                         createBorders(workbook, cell, 2);
                     }else{
-                        HSSFCell Cell = Row.createCell((short) gr);//2
+                        HSSFCell Cell = Row.createCell((short) gr);//
+                        worksheet.autoSizeColumn(gr);
                         createBorders(workbook, Cell, 3);
                     }
 
@@ -280,6 +287,12 @@ public class attendanceController {
             workbook.write(fileOut);
             fileOut.flush();
             fileOut.close();
+            try {
+                Desktop.getDesktop().open(new File("Attendance Sheet.xls"));
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -291,8 +304,6 @@ public class attendanceController {
     public static void createBorders(HSSFWorkbook workbook,HSSFCell cell, int x) {
         if (x == 1) {
             HSSFCellStyle style = workbook.createCellStyle();
-            //style.setFillBackgroundColor(HSSFColor.HSSFColorPredefined.LIGHT_BLUE.getIndex());
-            //style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
             style.setBorderBottom(BorderStyle.THICK);
             style.setBottomBorderColor(HSSFColor.HSSFColorPredefined.BLACK.getIndex());
             style.setBorderLeft(BorderStyle.THICK);
