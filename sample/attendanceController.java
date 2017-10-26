@@ -100,7 +100,6 @@ public class attendanceController {
         for (String student: studentFinal){
             System.out.println(student);
         }
-        Collections.sort(studentFinal);
     }
 
     public void loadDates(ActionEvent actionEvent) {
