@@ -227,6 +227,7 @@ public class attendanceController {
 
 
 
+
             // row 1 for Prinitng attendance sheet in center
             HSSFRow row0 = worksheet.createRow((short) 0);//1
             HSSFCell cellmid = row0.createCell((short) 0);//2
@@ -250,7 +251,6 @@ public class attendanceController {
 
                 cell1 = row1.createCell((short) y+1);//2
                 cell1.setCellValue(datesFinal.get(y));//3
-                //worksheet.autoSizeColumn(y+1);
                 createBorders(workbook, cell1, bordernum);
 
 
