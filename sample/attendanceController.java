@@ -192,12 +192,6 @@ public class attendanceController {
     public void createChart(ActionEvent actionEvent) {
         if(!studentFinal.isEmpty()&&!headerFinal.isEmpty()&&!datesFinal.isEmpty()){
             try {
-                /* Hide this current window
-                Stage stage = new Stage();
-                Parent root = FXMLLoader.load(getClass().getResource("createAttendanceChart.fxml"));
-                stage.setTitle("Add new entry");
-                stage.setScene(new Scene(root, 800, 600));
-                stage.show();*/
 
                 // Hide this current window
                 ((Node)(actionEvent.getSource())).getScene().getWindow().hide();
