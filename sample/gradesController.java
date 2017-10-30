@@ -8,8 +8,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-    import javafx.stage.FileChooser;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
@@ -23,16 +26,101 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class gradesController extends JFrame{
 
-    @FXML Label SFName,HFName,Error;
+
+    private final FileChooser fileLoader = new FileChooser();
+
+    public ArrayList<String> studentFinal = new ArrayList<>();
+
+    @FXML Label SFName,HFName,Error,SpacerText1,SpacerText3;
+    @FXML Button loadStudentButtonGR;
     @FXML TextField ColumnNumber;
     String studentFileName = "";
     int colNumber;
     String headerFileName = "";
-    public void loadStudents(ActionEvent actionEvent)
+    String finalHeader="";
+    private ArrayList<String> loadFile(){
+        Scene stage = loadStudentButtonGR.getScene();
+        fileLoader.setTitle("Choose File");
+
+        ArrayList<String> dataList = new ArrayList<>();
+
+        fileLoader.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
+
+        try{
+            File dataFile = fileLoader.showOpenDialog(stage.getWindow());
+            System.out.println(dataFile.getName());
+
+            BufferedReader reader = new BufferedReader(new FileReader(dataFile));
+
+            String temp;
+            while((temp = reader.readLine()) != null){
+                dataList.add(temp);
+            }
+
+            dataList.add(dataFile.getName());
+        }
+        catch(Exception e){
+            return null;
+        }
+        return dataList;
+
+    }
+
+    public void loadStudents(ActionEvent actionEvent) {
+        //file loader
+
+        ArrayList<String> studentList = loadFile();
+
+        if(studentList == null){
+            return;
+        }
+
+        String studentFileName = studentList.remove(studentList.size()-1);
+
+        Pattern r = Pattern.compile("([A-Z][\\w'-]+)");
+
+
+        //Dumb way to truncate data
+        try {
+            for (String student : studentList) {
+                Matcher m = r.matcher(student);
+
+                if(!student.matches("([A-Z][\\w'-]+)(, )([A-Z][\\w'-]+)(.*)")){
+                    throw new Exception();
+                }
+
+                ArrayList<String> temp = new ArrayList<>();
+                while(m.find()){
+                    temp.add(m.group());
+                }
+                studentFinal.add(temp.get(0)+" "+temp.get(1));
+            }
+            //displayStudentFile.setFill(javafx.scene.paint.Color.BLACK);
+            SpacerText1.setText(studentFileName);
+
+            Collections.sort(studentFinal);
+            for (int i = 0; i < studentFinal.size(); i++) {
+                String[] reverse = studentFinal.get(i).split(" ");
+                studentFinal.set(i, reverse[1]+" "+reverse[0]);
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+
+        for (String student: studentFinal){
+            System.out.println(student);
+        }
+    }
+    /*public void loadStudents(ActionEvent actionEvent)
     {
         try
         {
@@ -53,7 +141,7 @@ public class gradesController extends JFrame{
             Error.setText("Error Message: File Not Picked.");
         }
 
-    }
+    }*/
 
     public void loadColumns(ActionEvent actionEvent)
     {
@@ -73,9 +161,33 @@ public class gradesController extends JFrame{
 
     }
 
+    /*
+    ArrayList<String> headerList = loadFile();
+
+        if(headerList == null){
+            return;
+        }
+
+        String headerFileTitle = headerList.remove(headerList.size()-1);
+
+        if(headerList.isEmpty()){
+            SpacerText3.setText("Incorrect File Format");
+        }
+        else{
+            String header = "";
+            for (String line:headerList){
+                header += " "+line;
+            }
+            headerFileName.equals(header);
+
+            SpacerText3.setText(headerFileTitle);
+        }
+     */
+
+
     public void loadHeader(ActionEvent actionEvent)
     {
-        String finalHeader="";
+
         try
         {
             FileChooser chooser = new FileChooser();
@@ -96,6 +208,7 @@ public class gradesController extends JFrame{
                 System.out.println("Line from the File: "+finalHeader);
 
             }
+
             catch (Exception w)
             {
                 System.out.println("Not Getting Data From File");
@@ -112,7 +225,9 @@ public class gradesController extends JFrame{
         }
     }
 
-    /*public void createChart(ActionEvent actionEvent)
+
+
+    public void createChart(ActionEvent actionEvent)
     {
         System.out.println("Student File Name: "+ studentFileName);
         System.out.println("Column Number "+ colNumber);
@@ -126,8 +241,16 @@ public class gradesController extends JFrame{
 
             
         }
-        catch (IOException e) {
-            e.printStackTrace();
+        catch(Exception e){
+            //e.printStackTrace();
+            SpacerText1.setText("Incorrect File Format");
+        }
+        if(studentFinal.isEmpty()){
+            SpacerText1.setText("Incorrect File Format");
+        }
+
+        for (String student: studentFinal){
+            System.out.println(student);
         }
     }
     public String createSheet() {
@@ -135,9 +258,9 @@ public class gradesController extends JFrame{
 
         int bordernum = 2;
         try {
-            FileOutputStream fileOut = new FileOutputStream("Attendance Sheet.xls");
+            FileOutputStream fileOut = new FileOutputStream("Grades Sheet.xls");
             HSSFWorkbook workbook = new HSSFWorkbook();
-            HSSFSheet worksheet = workbook.createSheet("Attendance sheet");
+            HSSFSheet worksheet = workbook.createSheet("Grades Sheet");
             worksheet.getPrintSetup().setLandscape(true);
 
 
@@ -147,7 +270,7 @@ public class gradesController extends JFrame{
             HSSFRow row0 = worksheet.createRow((short) 0);//1
             HSSFCell cellmid = row0.createCell((short) 0);//2
             worksheet.addMergedRegion(new CellRangeAddress(0,0,0,colNumber));
-            cellmid.setCellValue(headerFileName);//3
+            cellmid.setCellValue(finalHeader);//3
             HSSFCellStyle cellStylem = workbook.createCellStyle();//4
             cellStylem.setAlignment(HorizontalAlignment.CENTER);
             cellStylem.setFillForegroundColor(HSSFColor.GOLD.index);//5
@@ -202,7 +325,7 @@ public class gradesController extends JFrame{
             fileOut.flush();
             fileOut.close();
             try {
-                Desktop.getDesktop().open(new File("Attendance Sheet.xls"));
+                Desktop.getDesktop().open(new File("Grades Sheet.xls"));
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -249,7 +372,7 @@ public class gradesController extends JFrame{
             style.setBorderTop(BorderStyle.THIN);
             style.setTopBorderColor(HSSFColor.HSSFColorPredefined.BLACK.getIndex());
             cell.setCellStyle(style);
-        }*/
+        }
 
 
     }
